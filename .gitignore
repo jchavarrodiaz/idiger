@@ -102,3 +102,13 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+.idea/
+config/
+data/
+docs/
+gis/
+notebooks/
+results/
+temp/
+
