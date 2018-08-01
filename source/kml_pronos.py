@@ -51,9 +51,9 @@ def get_pronos(releases, str_date):
         select *
         from pronosticos2
         where Fecha like '{}%'
-        and (Jornada = '{}' or Jornada = '{}')
+        and (Jornada = '{}' or Jornada = '{}' or Jornada = '{}' or Jornada = '{}')
         order by Fecha
-        """.format(str_date, releases[0], releases[1])
+        """.format(str_date, releases[0], releases[1], releases[2], releases[3])
 
     results = cursor.execute(query)
     columns = [i[0] for i in results.description]
@@ -189,19 +189,20 @@ def main():
     dt_config = get_pars_from_ini('../config/config.ini')
     get_all_files(ls_names=['pronosticos_bogota.db'], path_src=dt_config['Paths']['bd_pronos_bogota'], path_out='../data/pronos/')
 
-    hour = datetime.datetime.now().hour
+    # hour = datetime.datetime.now().hour
     # hour = 18
     str_date = datetime.datetime.today().strftime('%Y-%m-%d')
     # str_date = '2018-07-24'
     #
-    if (hour >= 7) & (hour < 17):
-        releases_pronos = ['Mañana', 'Tarde']
-    elif (hour >= 17) or (hour < 7):
-        releases_pronos = ['Noche', 'Madrugada']
-    else:
-        print('Emision de Pronostico por fuera de la hora oficial')
-        sys.exit(0)
+    # if (hour >= 7) & (hour < 17):
+    #     releases_pronos = ['Mañana', 'Tarde']
+    # elif (hour >= 17) or (hour < 7):
+    #     releases_pronos = ['Noche', 'Madrugada']
+    # else:
+    #     print('Emision de Pronostico por fuera de la hora oficial')
+    #     sys.exit(0)
 
+    releases_pronos = ['Mañana', 'Tarde', 'Noche', 'Madrugada']
     df_pronos = get_pronos(releases=releases_pronos, str_date=str_date)
 
     for j in releases_pronos:
