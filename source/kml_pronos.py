@@ -134,6 +134,7 @@ def gen_kml(df_data, forecast):
 
             dominio = desc_zones[zone]
             meteo = df_meteo[df_meteo.Id == int(pronos.Meterologo.values[0])].Nombre.values[0]
+            edition_time = pronos[pronos.Zona == zone].Fecha_Update.values[0]
             tmin = pronos[pronos.Zona == zone].TS_Min.values[0]
             tmax = pronos[pronos.Zona == zone].TS_Max.values[0]
             tiempo = df_icons[df_icons.Cod_Icono == pronos[pronos.Zona == zone].Codigo_PT.values[0]].Descripcion.values[0]
@@ -146,10 +147,11 @@ def gen_kml(df_data, forecast):
                                   'Temp. Mínima °C: {} <br>' \
                                   'Temp. Máxima °C: {} <br>' \
                                   'Meteorólogo: {} <br>' \
+                                  'Fecha Edición: {} <br>' \
                                   '<br><br>' \
                                   '<img src="{}" alt="picture" width="145" height="40" align="right" >' \
                                   '<br>' \
-                                  '<br>'.format(dominio, tiempo.encode('utf8'), tmin, tmax, meteo.encode('utf8'), logo_path).decode('utf8')
+                                  '<br>'.format(dominio, tiempo.encode('utf8'), tmin, tmax, meteo.encode('utf8'), edition_time, logo_path).decode('utf8')
             else:
                 pnt.description = 'Dominio: {} <br><br> ' \
                                   'Condiciones Actuales: {} <br><br>' \
@@ -157,10 +159,11 @@ def gen_kml(df_data, forecast):
                                   'Temp. Mínima °C: {} <br>' \
                                   'Temp. Máxima °C: {} <br>' \
                                   'Meteorólogo: {} <br>' \
+                                  'Fecha Edición: {} <br>' \
                                   '<br><br>' \
                                   '<img src="{}" alt="picture" width="145" height="40" align="right" >' \
                                   '<br>' \
-                                  '<br>'.format(dominio, condiciones.encode('utf8'), tiempo.encode('utf8'), tmin, tmax, meteo.encode('utf8'), logo_path).decode('utf8')
+                                  '<br>'.format(dominio, condiciones.encode('utf8'), tiempo.encode('utf8'), tmin, tmax, meteo.encode('utf8'), edition_time, logo_path).decode('utf8')
 
             pnt.coords = [(float(df_coords[df_coords.Cod_Zona == zone].Geometria.values[0].replace('POINT(', '')[:-1].split(' ')[0]),
                            float(df_coords[df_coords.Cod_Zona == zone].Geometria.values[0].replace('POINT(', '')[:-1].split(' ')[1]))]
