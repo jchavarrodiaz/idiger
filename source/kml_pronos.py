@@ -42,7 +42,7 @@ def bart_upload(name_file):
         "No se ha podido conectar al servidor " + ftp_server
 
 
-def get_pronos(releases, str_date):
+def get_pronos(releases, str_date, mode):
     path_db = '../data/pronos/pronosticos_bogota.db'
     conn = sqlite3.connect(path_db)  # crear la conexion
     cursor = conn.cursor()
@@ -62,7 +62,13 @@ def get_pronos(releases, str_date):
     temp_eval = df_pronos.copy()
     df_pronos['TS_Min'] = np.where(temp_eval['TS_Min'] > temp_eval['TS_Max'], temp_eval['TS_Max'], temp_eval['TS_Min'])
     df_pronos['TS_Max'] = np.where(temp_eval['TS_Max'] > temp_eval['TS_Min'], temp_eval['TS_Max'], temp_eval['TS_Min'])
-    return df_pronos
+
+    if mode == 'operation':
+        df_filter_pronos = df_pronos[df_pronos['Meterologo'] != 7]
+    else:
+        df_filter_pronos = df_pronos.copy()
+
+    return df_filter_pronos
 
 
 def get_geometry():
@@ -192,21 +198,16 @@ def main():
     dt_config = get_pars_from_ini('../config/config.ini')
     get_all_files(ls_names=['pronosticos_bogota.db'], path_src=dt_config['Paths']['bd_pronos_bogota'], path_out='../data/pronos/')
 
-    # hour = datetime.datetime.now().hour
-    # hour = 18
     str_date = datetime.datetime.today().strftime('%Y-%m-%d')
-    str_date = '2018-09-24'
-    #
-    # if (hour >= 7) & (hour < 17):
-    #     releases_pronos = ['Mañana', 'Tarde']
-    # elif (hour >= 17) or (hour < 7):
-    #     releases_pronos = ['Noche', 'Madrugada']
-    # else:
-    #     print('Emision de Pronostico por fuera de la hora oficial')
-    #     sys.exit(0)
+    str_date = '2018-09-27'
+
+    # In trial mode, the script only takes the data of jchavarro user
+    # (trial's user) and makes the kml files. In operation mode,
+    # the script only takes the data of the official meteorologists.
+    mode = 'operation'  # or trail for evaluations
 
     releases_pronos = ['Mañana', 'Tarde', 'Noche', 'Madrugada']
-    df_pronos = get_pronos(releases=releases_pronos, str_date=str_date)
+    df_pronos = get_pronos(releases=releases_pronos, str_date=str_date, mode=mode)
 
     for j in releases_pronos:
         gen_kml(df_data=df_pronos[df_pronos['Jornada'] == j.decode('utf8')], forecast=j)
