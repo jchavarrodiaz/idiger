@@ -10,6 +10,8 @@ from config_utils import get_pars_from_ini
 
 
 def get_pronos(releases, str_date):
+    pars = get_pars_from_ini('../config/config.ini')
+
     path_db = '../data/pronos/pronosticos_bogota.db'
     conn = sqlite3.connect(path_db)  # crear la conexion
     cursor = conn.cursor()
@@ -27,6 +29,7 @@ def get_pronos(releases, str_date):
         results = cursor.execute(query)
         columns = [i[0] for i in results.description]
         data = results.fetchall()
+
         return pd.DataFrame(data, columns=columns)
 
 
@@ -80,8 +83,8 @@ def get_meteorologo():
 
 def main():
 
-    # dt_config = get_pars_from_ini('../config/config.ini')
-    # get_all_files(ls_names=['pronosticos_bogota.db'], path_src=dt_config['Paths']['bd_pronos_bogota'], path_out='../data/pronos/')
+    dt_config = get_pars_from_ini('../config/config.ini')
+    get_all_files(ls_names=['pronosticos_bogota.db'], path_src=dt_config['Paths']['bd_pronos_bogota'], path_out='../data/pronos/')
 
     # hour = datetime.datetime.now().hour
     hour = 8
@@ -90,10 +93,12 @@ def main():
 
     if hour == 8:
         releases_pronos = ['Mañana', 'Tarde']
+
     elif hour == 18:
         releases_pronos = ['Noche', 'Madrugada']
+
     else:
-        print 'Emision de Pronostico por fuera de la hora oficial'
+        print('Emision de Pronostico por fuera de la hora oficial')
         sys.exit(0)
 
     get_pronos(releases=releases_pronos, str_date=str_date)
@@ -101,4 +106,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

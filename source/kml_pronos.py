@@ -195,7 +195,7 @@ def main():
     # hour = datetime.datetime.now().hour
     # hour = 18
     str_date = datetime.datetime.today().strftime('%Y-%m-%d')
-    # str_date = '2018-07-24'
+    str_date = '2018-09-24'
     #
     # if (hour >= 7) & (hour < 17):
     #     releases_pronos = ['Mañana', 'Tarde']
